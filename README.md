@@ -100,7 +100,7 @@ Public repositories are free, but CI still authenticates with a project token. I
   run: covdbg --config .covdbg.yaml --output coverage.covdb .\build\Debug\test_app.exe
 ```
 
-See [liasoft/quick-start](https://github.com/liasoft/quick-start) for a complete C++ example. For local use, sign in with `covdbg login`.
+See [liasoft/covdbg-quick-start](https://github.com/liasoft/covdbg-quick-start) for a complete C++ example. For local use, sign in with `covdbg login`.
 
 ## How It Works
 
