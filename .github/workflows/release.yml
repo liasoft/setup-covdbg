@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to release (e.g., 0.1.0)'
+        description: 'Version to release (e.g., 1.0.0)'
         required: true
         type: string
 
@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -46,13 +46,13 @@ jobs:
           git tag -f v${{ inputs.version }}
           git push origin v${{ inputs.version }} --force
           
-          # Also update major version tag (e.g., v0 for v0.1.0)
+          # Also update major version tag (e.g., v1 for v1.0.0)
           MAJOR=$(echo "${{ inputs.version }}" | cut -d. -f1)
           git tag -f v${MAJOR}
           git push origin v${MAJOR} --force
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ inputs.version }}
           name: v${{ inputs.version }}

@@ -6,11 +6,11 @@ branding:
   color: 'blue'
 inputs:
   version:
-    description: 'Version of covdbg to download (e.g., 1.0.0, latest)'
+    description: 'Version of covdbg to download (e.g., 1.3.0, latest)'
     required: true
 outputs:
   covdbg-path:
     description: 'Path where covdbg was installed'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
