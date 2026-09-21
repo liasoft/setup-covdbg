@@ -1,6 +1,6 @@
 {
   "name": "setup-covdbg",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "GitHub Action to download and setup covdbg on Windows runners",
   "main": "dist/index.js",
   "scripts": {

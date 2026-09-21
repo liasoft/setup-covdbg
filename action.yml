@@ -12,5 +12,5 @@ outputs:
   covdbg-path:
     description: 'Path where covdbg was installed'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'

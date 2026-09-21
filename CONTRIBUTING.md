@@ -52,6 +52,16 @@ Test your changes locally using the test workflow:
 3. Update the README.md with details of changes if applicable
 4. Your PR will be reviewed by maintainers
 
+## Releasing
+
+After the changes are merged into `main`, run the **Release** workflow on `main` with version `1.0.0`:
+
+```bash
+gh workflow run release.yml --ref main -f version=1.0.0
+```
+
+The workflow rebuilds the action, publishes the `v1.0.0` release, and updates the `v1` tag used by `liasoft/setup-covdbg@v1`. Changing `package.json` alone does not create these Git tags. The action version is independent of the covdbg version selected through the `version` input.
+
 ## Questions?
 
 Open an issue for discussion or clarification.

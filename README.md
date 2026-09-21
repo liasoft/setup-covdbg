@@ -21,7 +21,7 @@ Add this action to your workflow:
 ```yaml
 steps:
   - name: Setup covdbg
-    uses: liasoft/setup-covdbg@v0
+    uses: liasoft/setup-covdbg@v1
     with:
       version: '1.3.0'
   
@@ -51,7 +51,7 @@ The path where covdbg was installed and cached.
 ```yaml
 - name: Setup covdbg
   id: setup-covdbg
-  uses: liasoft/setup-covdbg@v0
+  uses: liasoft/setup-covdbg@v1
   with:
     version: '1.3.0'
 
@@ -76,10 +76,10 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Setup covdbg
-        uses: liasoft/setup-covdbg@v0
+        uses: liasoft/setup-covdbg@v1
         with:
           version: '1.3.0'
       
@@ -119,8 +119,8 @@ The action performs the following steps:
 
 ## Requirements
 
-- Runs on Windows runners (windows-latest, windows-2022, windows-2019)
-- Requires Node.js 20 runtime (automatically available on GitHub-hosted runners)
+- Runs on Windows runners (windows-latest or windows-2022)
+- Requires the Node.js 24 action runtime and Actions Runner 2.327.1 or newer (automatically available on GitHub-hosted runners)
 
 ## Development
 
