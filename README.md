@@ -21,9 +21,9 @@ Add this action to your workflow:
 ```yaml
 steps:
   - name: Setup covdbg
-    uses: covdbg/setup-covdbg@v1
+    uses: liasoft/setup-covdbg@v0
     with:
-      version: '1.0.0'
+      version: '1.3.0'
   
   - name: Run covdbg
     run: covdbg --version
@@ -33,12 +33,12 @@ steps:
 
 ### `version` (required)
 
-The version of covdbg to download and setup. This should be a semantic version string (e.g., `1.0.0`, `2.1.3`).
+The version of covdbg to download and setup. Use `1.3.0` for the stable release or `latest` to follow the latest published release. Pin a version for reproducible workflows.
 
 **Example:**
 ```yaml
 with:
-  version: '1.0.0'
+  version: '1.3.0'
 ```
 
 ## Outputs
@@ -51,9 +51,9 @@ The path where covdbg was installed and cached.
 ```yaml
 - name: Setup covdbg
   id: setup-covdbg
-  uses: covdbg/setup-covdbg@v1
+  uses: liasoft/setup-covdbg@v0
   with:
-    version: '1.0.0'
+    version: '1.3.0'
 
 - name: Display installation path
   run: echo "Covdbg installed at ${{ steps.setup-covdbg.outputs.covdbg-path }}"
@@ -79,15 +79,28 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Setup covdbg
-        uses: covdbg/setup-covdbg@v1
+        uses: liasoft/setup-covdbg@v0
         with:
-          version: '1.0.0'
+          version: '1.3.0'
       
       - name: Verify covdbg installation
         run: |
           covdbg --version
-          covdbg --help
 ```
+
+## Collecting coverage
+
+Public repositories are free, but CI still authenticates with a project token. Installing covdbg does not sign in to the license service. To collect coverage in CI, add a `COVDBG_PROJECT_TOKEN` Actions secret containing a covdbg project token authorized for your repository, then pass it to the coverage step:
+
+```yaml
+- name: Collect coverage
+  shell: pwsh
+  env:
+    COVDBG_PROJECT_TOKEN: ${{ secrets.COVDBG_PROJECT_TOKEN }}
+  run: covdbg --config .covdbg.yaml --output coverage.covdb .\build\Debug\test_app.exe
+```
+
+See [liasoft/quick-start](https://github.com/liasoft/quick-start) for a complete C++ example. For local use, sign in with `covdbg login`.
 
 ## How It Works
 
@@ -96,7 +109,7 @@ This action uses the GitHub Actions Toolkit, specifically:
 - **@actions/tool-cache**: For downloading, extracting, and caching the covdbg binary
 
 The action performs the following steps:
-1. Reads the `version` input parameter (or uses 'latest')
+1. Reads the `version` input parameter (required; use an explicit version or `latest`)
 2. Constructs the download URL for the specified version from covdbg.com
 3. Downloads the covdbg.zip archive containing covdbg.exe and libcovdbg.dll
 4. Extracts the archive
@@ -115,7 +128,7 @@ To build and package the action:
 
 ```bash
 # Install dependencies
-npm install
+npm ci
 
 # Build TypeScript
 npm run build
@@ -124,7 +137,8 @@ npm run build
 npm run package
 ```
 
-**Note**: The `dist/` directory is not tracked in git. You must build the action locally before testing or using it.
+> [!NOTE]
+> The `dist/` directory is tracked in Git and is what GitHub Actions executes. Commit regenerated `dist/` files whenever the action source changes.
 
 ## License
 

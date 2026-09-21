@@ -9,35 +9,47 @@ on:
 jobs:
   test:
     runs-on: windows-latest
-    
+    strategy:
+      matrix:
+        version: [ '1.3.0', 'latest' ]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+
       - name: Install dependencies
-        run: npm install
-      
-      - name: Build action
-        run: npm run package
-      
+        run: npm ci
+
+      - name: Check TypeScript
+        run: npm run build
+
       - name: Setup covdbg
+        id: setup-covdbg
         uses: ./
         with:
-          version: '1.0.0-beta.1+242'
-      
-      - name: Verify covdbg is in PATH
-        run: |
-          Write-Host "Checking if covdbg is available..."
-          Get-Command covdbg -ErrorAction SilentlyContinue
-          if ($?) {
-            Write-Host "✓ covdbg is in PATH"
-          } else {
-            Write-Host "✗ covdbg is not in PATH"
-            exit 1
-          }
+          version: ${{ matrix.version }}
+
+      - name: Verify covdbg installation
         shell: pwsh
+        env:
+          EXPECTED_VERSION: ${{ matrix.version }}
+          COVDBG_PATH: ${{ steps.setup-covdbg.outputs.covdbg-path }}
+        run: |
+          $command = Get-Command covdbg -ErrorAction Stop
+          if ($command.Source -ne (Join-Path $env:COVDBG_PATH 'covdbg.exe')) {
+            throw 'covdbg does not resolve to the action output directory.'
+          }
+          if (-not (Test-Path (Join-Path $env:COVDBG_PATH 'libcovdbg.dll'))) {
+            throw 'libcovdbg.dll is missing from the installation.'
+          }
+          $version = covdbg --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Host $version
+          if ($env:EXPECTED_VERSION -ne 'latest' -and $version -ne "covdbg $env:EXPECTED_VERSION") {
+            throw "Expected covdbg $env:EXPECTED_VERSION, got $version."
+          }
