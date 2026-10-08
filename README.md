@@ -23,7 +23,7 @@ steps:
   - name: Setup covdbg
     uses: liasoft/setup-covdbg@v1
     with:
-      version: '1.3.0'
+      version: '1.4.0'
   
   - name: Run covdbg
     run: covdbg --version
@@ -33,12 +33,12 @@ steps:
 
 ### `version` (required)
 
-The version of covdbg to download and setup. Use `1.3.0` for the stable release or `latest` to follow the latest published release. Pin a version for reproducible workflows.
+The version of covdbg to download and setup. `1.4.0` is the newest release, and `latest` follows the latest published release. Pin a version for reproducible builds.
 
 **Example:**
 ```yaml
 with:
-  version: '1.3.0'
+  version: '1.4.0'
 ```
 
 ## Outputs
@@ -53,7 +53,7 @@ The path where covdbg was installed and cached.
   id: setup-covdbg
   uses: liasoft/setup-covdbg@v1
   with:
-    version: '1.3.0'
+    version: '1.4.0'
 
 - name: Display installation path
   run: echo "Covdbg installed at ${{ steps.setup-covdbg.outputs.covdbg-path }}"
@@ -81,7 +81,7 @@ jobs:
       - name: Setup covdbg
         uses: liasoft/setup-covdbg@v1
         with:
-          version: '1.3.0'
+          version: '1.4.0'
       
       - name: Verify covdbg installation
         run: |
@@ -90,7 +90,7 @@ jobs:
 
 ## Collecting coverage
 
-Public repositories are free, but CI still authenticates with a project token. Installing covdbg does not sign in to the license service. To collect coverage in CI, add a `COVDBG_PROJECT_TOKEN` Actions secret containing a covdbg project token authorized for your repository, then pass it to the coverage step:
+Public repositories are free, but CI still authenticates with a project token. Installing covdbg does not sign in to the license service. To collect coverage in CI, add a `COVDBG_PROJECT_TOKEN` Actions secret containing a covdbg project token authorized for your repository (the token's team decides the run), then pass it to the coverage step:
 
 ```yaml
 - name: Collect coverage
