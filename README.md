@@ -23,7 +23,7 @@ steps:
   - name: Setup covdbg
     uses: liasoft/setup-covdbg@v1
     with:
-      version: '1.4.0'
+      version: '1.5.1'
   
   - name: Run covdbg
     run: covdbg --version
@@ -33,12 +33,12 @@ steps:
 
 ### `version` (required)
 
-The version of covdbg to download and setup. `1.4.0` is the newest release, and `latest` follows the latest published release. Pin a version for reproducible builds.
+The version of covdbg to download and setup. `1.5.1` is the newest release, and `latest` follows the latest published release. Pin a version for reproducible builds.
 
 **Example:**
 ```yaml
 with:
-  version: '1.4.0'
+  version: '1.5.1'
 ```
 
 ## Outputs
@@ -53,7 +53,7 @@ The path where covdbg was installed and cached.
   id: setup-covdbg
   uses: liasoft/setup-covdbg@v1
   with:
-    version: '1.4.0'
+    version: '1.5.1'
 
 - name: Display installation path
   run: echo "Covdbg installed at ${{ steps.setup-covdbg.outputs.covdbg-path }}"
@@ -81,7 +81,7 @@ jobs:
       - name: Setup covdbg
         uses: liasoft/setup-covdbg@v1
         with:
-          version: '1.4.0'
+          version: '1.5.1'
       
       - name: Verify covdbg installation
         run: |
@@ -90,7 +90,39 @@ jobs:
 
 ## Collecting coverage
 
-Public repositories are free, but CI still authenticates with a project token. Installing covdbg does not sign in to the license service. To collect coverage in CI, add a `COVDBG_PROJECT_TOKEN` Actions secret containing a covdbg project token authorized for your repository (the token's team decides the run), then pass it to the coverage step:
+Installing covdbg does not sign in to the license service, so the coverage step carries a credential of its own. Which one depends on whether the repository is public.
+
+### Public repositories need no secret
+
+From covdbg 1.5.0, grant the job `id-token: write` and configure nothing else. covdbg presents the job's GitHub OIDC token, which proves which repository the run belongs to, and public repositories are free:
+
+```yaml
+jobs:
+  coverage:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      id-token: write      # lets covdbg prove which repository this run belongs to
+    steps:
+      # ... checkout, setup-covdbg, build ...
+      - name: Collect coverage
+        shell: pwsh
+        run: covdbg --config .covdbg.yaml --output coverage.covdb .\build\Debug\test_app.exe
+```
+
+GitHub does not issue an OIDC token to a pull request from a fork, and no `permissions:` block changes that. Measure coverage on pushes and on pull requests from your own repository, and skip fork pull requests rather than letting them fail:
+
+```yaml
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+```
+
+Do not use `pull_request_target` to work around this: it runs with your repository's credentials and would execute code from the fork.
+
+### Private repositories carry a project token
+
+Add a `COVDBG_PROJECT_TOKEN` Actions secret containing a covdbg project token authorized for your repository (the token's team decides the run), then pass it to the coverage step:
 
 ```yaml
 - name: Collect coverage
