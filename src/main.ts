@@ -38,7 +38,7 @@ async function run(): Promise<void> {
       if (error instanceof tc.HTTPError && error.httpStatusCode === 404) {
         throw new Error(
           `covdbg ${version} is not available for ${architecture}` +
-          (architecture === 'arm64' ? ' (arm64 builds are available from covdbg 1.5.1)' : '')
+          (architecture === 'arm64' ? ' (arm64 builds are available from covdbg 1.5.0)' : '')
         );
       }
       throw error;
