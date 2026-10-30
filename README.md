@@ -43,7 +43,7 @@ with:
 
 ### `architecture` (optional)
 
-The covdbg build to download: `x64` or `arm64`. Defaults to the runner's architecture, so `windows-11-arm` runners get the native ARM64 build automatically. ARM64 builds are available from covdbg 1.5.1.
+The covdbg build to download: `x64` or `arm64`. Defaults to the runner's architecture, so `windows-11-arm` runners get the native ARM64 build automatically. ARM64 builds are available from covdbg 1.5.0.
 
 **Example:**
 ```yaml
