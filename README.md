@@ -12,7 +12,7 @@ This action downloads a specified version of covdbg, extracts it, caches it for 
 - Extracts the downloaded archive
 - Caches the tool for faster subsequent runs
 - Adds covdbg to the PATH automatically
-- Supports Windows runners
+- Supports Windows x64 and ARM64 runners
 
 ## Usage
 
@@ -39,6 +39,17 @@ The version of covdbg to download and setup. `1.5.1` is the newest release, and 
 ```yaml
 with:
   version: '1.5.1'
+```
+
+### `architecture` (optional)
+
+The covdbg build to download: `x64` or `arm64`. Defaults to the runner's architecture, so `windows-11-arm` runners get the native ARM64 build automatically. ARM64 builds are available from covdbg 1.5.1.
+
+**Example:**
+```yaml
+with:
+  version: '1.5.1'
+  architecture: 'arm64'
 ```
 
 ## Outputs
@@ -142,16 +153,17 @@ This action uses the GitHub Actions Toolkit, specifically:
 
 The action performs the following steps:
 1. Reads the `version` input parameter (required; use an explicit version or `latest`)
-2. Constructs the download URL for the specified version from covdbg.com
-3. Downloads the covdbg.zip archive containing covdbg.exe and libcovdbg.dll
-4. Extracts the archive
-5. Caches the extracted files for future workflow runs
-6. Adds the tool directory to the system PATH
-7. Sets the `covdbg-path` output
+2. Resolves the architecture (`architecture` input, or the runner's architecture)
+3. Constructs the download URL for the specified version and architecture from covdbg.com
+4. Downloads the covdbg.zip archive containing covdbg.exe and libcovdbg.dll
+5. Extracts the archive
+6. Caches the extracted files for future workflow runs
+7. Adds the tool directory to the system PATH
+8. Sets the `covdbg-path` output
 
 ## Requirements
 
-- Runs on Windows runners (windows-latest or windows-2022)
+- Runs on Windows x64 runners (windows-latest or windows-2022) and Windows ARM64 runners (windows-11-arm)
 - Requires the Node.js 24 action runtime and Actions Runner 2.327.1 or newer (automatically available on GitHub-hosted runners)
 
 ## Development
