@@ -8,6 +8,9 @@ inputs:
   version:
     description: 'Version of covdbg to download (e.g., 1.4.0, latest)'
     required: true
+  architecture:
+    description: 'Architecture of covdbg to download (x64 or arm64). Defaults to the runner architecture.'
+    required: false
 outputs:
   covdbg-path:
     description: 'Path where covdbg was installed'
